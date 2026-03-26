@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>注册 - 中医知识图谱</title>
+    <!-- Font Awesome 图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- 保留 Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-image: url("{{ url_for('static', filename='bg3.jpg') }}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            margin: 0;
+            padding: 15px;
+        }
+
+        .register-wrapper {
+            width: 100%;
+            max-width: 460px;  /* 适中的卡片宽度 */
+        }
+
+        /* 卡片 — 完全继承登录页的毛玻璃风格，去掉flex布局，改为纯内边距 */
+        .register-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 32px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 40px 35px;          /* 左右内边距与登录页左侧一致 */
+        }
+
+        /* 品牌标题 (完全复用登录页左侧) */
+        .brand-title {
+            font-size: 28px;
+            font-weight: 700;
+            text-align: left;
+            color: #1e3c2c;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .sub-title {
+            text-align: left;
+            font-size: 18px;
+            color: #2b5e3b;
+            margin-bottom: 30px;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+
+        /* 输入框容器 */
+        .input-group-custom {
+            position: relative;
+            margin-bottom: 22px;
+        }
+
+        .input-group-custom i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c8c6f;
+            font-size: 18px;
+            z-index: 2;
+        }
+
+        .input-group-custom input {
+            width: 100%;
+            padding: 16px 20px 16px 50px;
+            border: 1px solid rgba(40, 167, 69, 0.3);
+            border-radius: 40px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s;
+            outline: none;
+        }
+
+        .input-group-custom input:focus {
+            border-color: #28a745;
+            box-shadow: 0 0 0 4px rgba(40, 167, 69, 0.15);
+            background: #ffffff;
+        }
+
+        /* 自定义错误提示 (完全复用登录页) */
+        .custom-alert {
+            background: rgba(248, 215, 218, 0.9);
+            backdrop-filter: blur(5px);
+            color: #721c24;
+            padding: 14px 20px;
+            border-radius: 40px;
+            margin-bottom: 25px;
+            font-size: 15px;
+            border: 1px solid #f5c6cb;
+            position: relative;
+            padding-right: 45px;
+        }
+
+        .custom-alert .btn-close-custom {
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: #721c24;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .custom-alert .btn-close-custom:hover {
+            opacity: 1;
+        }
+
+        /* 登录按钮样式 — 我们重用作注册按钮，只改文字 */
+        .btn-login {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 16px 20px;
+            border-radius: 40px;
+            font-size: 18px;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 8px 18px rgba(32, 201, 151, 0.3);
+            margin-top: 10px;
+        }
+
+        .btn-login:hover {
+            transform: scale(1.02);
+            box-shadow: 0 12px 24px rgba(32, 201, 151, 0.4);
+            background: linear-gradient(135deg, #2ecc71, #28a745);
+        }
+
+        /* 底部登录链接 (仿照登录页的“忘记密码”风格，但更柔和) */
+        .login-redirect {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 16px;
+            color: #2b4f2e;
+        }
+
+        .login-redirect a {
+            color: #28a745;
+            text-decoration: none;
+            font-weight: 600;
+            margin-left: 6px;
+            transition: color 0.2s;
+        }
+
+        .login-redirect a:hover {
+            color: #1e7e34;
+            text-decoration: underline;
+        }
+
+        /* 不再需要右侧区域的任何样式，全部移除 */
+        /* 同时隐藏可能干扰的bootstrap hr */
+        hr {
+            display: none;
+        }
+
+        /* 响应式微调：小屏幕上内边距稍微减少 */
+        @media (max-width: 480px) {
+            .register-card {
+                padding: 30px 20px;
+            }
+            .brand-title {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body class="d-flex align-items-center justify-content-center min-vh-100">
+    <div class="register-wrapper">
+        <div class="register-card">
+            <!-- 标题：与登录页左侧完全一致，只改副标题 -->
+            <h1 class="brand-title">🏥 中医问答平台</h1>
+            <h2 class="sub-title">用户注册</h2>
+
+            <!-- 错误消息显示区 (完全复用登录页的custom-alert) -->
+            {% if error %}
+            <div class="custom-alert" role="alert">
+                {{ error }}
+                <button type="button" class="btn-close-custom" data-bs-dismiss="alert" aria-label="Close">&times;</button>
+            </div>
+            {% endif %}
+
+            <!-- 注册表单 — 只有用户名/密码，简洁 -->
+            <form method="post">
+                <!-- 用户名输入框 -->
+                <div class="input-group-custom">
+                    <i class="fas fa-user"></i>
+                    <input type="text" name="username" placeholder="用户名" required>
+                </div>
+                <!-- 密码输入框 -->
+                <div class="input-group-custom">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" name="password" placeholder="密码" required>
+                </div>
+
+                <!-- 注册按钮 (沿用登录按钮样式，文字改为“注册”) -->
+                <button type="submit" class="btn-login">注 册</button>
+            </form>
+
+            <!-- 已有账号？立即登录链接 -->
+            <div class="login-redirect">
+                已有账号？<a href="{{ url_for('login') }}">立即登录</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS (用于响应式及关闭按钮功能，但自定义关闭脚本更直接) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- 手动关闭自定义弹窗的脚本 (与登录页一致) -->
+    <script>
+        document.querySelectorAll('.btn-close-custom').forEach(btn => {
+            btn.addEventListener('click', function (e) {
+                this.closest('.custom-alert').style.display = 'none';
+            });
+        });
+    </script>
+</body>
+</html>
